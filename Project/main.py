@@ -2,6 +2,7 @@ import cv2
 import pygame
 from mask_functions import setup_camera, get_kernel, get_color_ranges, detect_color, show_images
 import protocol_functions as pf
+from emotion_recognition import detectar_emociones
 
 def main():
     cap = setup_camera()
@@ -36,9 +37,9 @@ def main():
         
     cap.release()
     cv2.destroyAllWindows()
-    
+
+    altura = detectar_emociones()
     if protocol_flag:
-        altura = int(input("ingresa altura: "))  # Convertir altura a entero
         print(altura)
         print(num_class)
         
@@ -112,4 +113,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
