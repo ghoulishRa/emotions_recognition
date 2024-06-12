@@ -44,6 +44,20 @@ def draw_text(screen, text, position):
     font = pygame.font.SysFont(None, 36)
     text_surface = font.render(text, True, WHITE)
     screen.blit(text_surface, position)
+    
+# Función para pintar la pantalla de negro durante 5 segundos
+def paint_black_screen(screen, stage, start_time):
+    if stage == 0:
+        elapsed_time = (pygame.time.get_ticks() - start_time) / 1000
+        if elapsed_time < 5:
+            screen.fill((0, 0, 0))
+            pygame.display.update()
+            return stage, start_time
+        else:
+            stage += 3
+            start_time = pygame.time.get_ticks()
+    return stage, start_time
+
 
 # Definir las etapas de PCA, PRC y PRM
 
@@ -175,15 +189,15 @@ def prm_medio(screen, stage, start_time):
 
 def prm_bajo(screen, stage, start_time):
     if stage == 0:
-        if flash_screen_logic(screen, start_time, 3, 0.1, RED, "PRM: Alto"):
+        if flash_screen_logic(screen, start_time, 3, 0.1, RED, "PRM: Bajo"):
             stage += 1
             start_time = pygame.time.get_ticks()
     elif stage == 1:
-        if flash_screen_logic(screen, start_time, 6, 0.5, GREEN, "PRM: Alto"):
+        if flash_screen_logic(screen, start_time, 6, 0.5, GREEN, "PRM: Bajo"):
             stage += 1
             start_time = pygame.time.get_ticks()
     elif stage == 2:
-        if flash_screen_logic(screen, start_time, 9, 0.9, RED, "PRM: Alto"):
+        if flash_screen_logic(screen, start_time, 9, 0.9, RED, "PRM: Bajo"):
             stage += 1
             start_time = pygame.time.get_ticks()
     return stage, start_time

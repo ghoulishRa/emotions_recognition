@@ -25,7 +25,7 @@ def main():
             protocol_flag = False
             save += 1
         
-        if result is not None:
+        if result is not None: 
             print(f'Detected Result: {result}')
         
         if frame is not None and closing is not None:
@@ -58,7 +58,7 @@ def main():
             elif altura == 3:
                 current_function = pf.pca_bajo
             else:
-                current_function = pf.pca_bajo
+                current_function = pf.paint_black_screen
                 
 
         elif num_class == 2:
@@ -69,7 +69,7 @@ def main():
             elif altura == 3:
                 current_function = pf.prm_bajo
             else:
-                current_function = pf.pca_bajo
+                current_function = pf.paint_black_screen
                 
         elif num_class == 3:
             if altura == 1:
@@ -77,10 +77,12 @@ def main():
                 print("prc alto")
             elif altura == 2:
                 current_function = pf.prc_medio
+                print("prc alto")
             elif altura == 3:
-                current_function = pf.prm_bajo
+                current_function = pf.prc_bajo
+                print("prc alto")
             else:
-                current_function = pf.pca_bajo
+                current_function = pf.paint_black_screen
                 print("else")
         else:
             print("Input no válido")
