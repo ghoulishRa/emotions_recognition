@@ -1,9 +1,3 @@
-## Detección de emociones en tiempo real ##
-## SISTEMAS INTELIGENTES ##
-## https://www.youtube.com/channel/UCr_dJOULDvSXMHA1PSHy2rg
-## David Revelo Luna
-
-# Import de librerias
 from tensorflow.keras.applications.imagenet_utils import preprocess_input
 from tensorflow.keras.preprocessing.image import img_to_array
 from tensorflow.keras.models import load_model
@@ -27,7 +21,7 @@ def detectar_emociones():
     faceNet = cv2.dnn.readNet(prototxtPath, weightsPath)
 
     # Carga el detector de clasificación de emociones
-    emotionModel = load_model("modelFEC.h5")
+    emotionModel = load_model("deep_learning_emotion_recognition/modelFEC.h5")
 
     # Se crea la captura de video
     cam = cv2.VideoCapture(0, cv2.CAP_DSHOW)
@@ -65,7 +59,7 @@ def detectar_emociones():
                     Yi = 0
 
                 # Se extrae el rostro y se convierte BGR a GRAY
-                # Finalmente se escala a 224x244
+                # Finalmente se escala a 48x48
                 face = frame[Yi:Yf, Xi:Xf]
                 face = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
                 face = cv2.resize(face, (48, 48))
@@ -82,14 +76,15 @@ def detectar_emociones():
         return locs, preds
 
     val = -1
+    estres = ['alto', 'medio', 'bajo']
+    lista = [0, 0, 0]
+    emocion = ''
+    rango = 100
 
-    while True:
+    for i in range(rango):
         # Se toma un frame de la cámara y se redimensiona
         ret, frame = cam.read()
         frame = imutils.resize(frame, width=640)
-        lista = [0, 0, 0]
-        estres = ['alto', 'medio', 'bajo']
-        emocion = ''
 
         (locs, preds) = predict_emotion(frame, faceNet, emotionModel)
 
@@ -101,6 +96,7 @@ def detectar_emociones():
                 classes[np.argmax(pred)], max(angry, disgust, fear, happy, neutral, sad, surprise) * 100
             )
             emocion = classes[np.argmax(pred)]
+            print(emocion)
 
             cv2.rectangle(frame, (Xi, Yi - 40), (Xf, Yi), (255, 0, 0), -1)
             cv2.putText(frame, label, (Xi + 5, Yi - 15), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
@@ -115,7 +111,7 @@ def detectar_emociones():
 
         cv2.putText(frame, str(int(fps)) + " FPS", (5, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 3, cv2.LINE_AA)
 
-        for i in range(100):
+        if emocion:
             indice = classes.index(emocion)
 
             if indice == 0 or indice == 2:
@@ -125,23 +121,27 @@ def detectar_emociones():
             elif indice == 3 or indice == 4:
                 lista[2] += 2  # BAJO
 
-        categoria = lista.index(max(lista))
-
-        if categoria == 0:
-            val = 0
-        elif categoria == 1:
-            val = 1
-        elif categoria == 2:
-            val = 2
-
-        lista = [0, 0, 0]
-
         cv2.imshow("Frame", frame)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        
+        # Si se presiona la tecla 'q', terminar el loop
+        print(i, ' - ', rango)
+        if cv2.waitKey(1) & i == rango:
             break
 
-    cv2.destroyAllWindows()
+    categoria = lista.index(max(lista))
+
+    if categoria == 0:
+        val = 1
+    elif categoria == 1:
+        val = 2
+    elif categoria == 2:
+        val = 3
+    else:
+        val = -1
+
+    # Liberar la cámara y cerrar ventanas después de la iteración
     cam.release()
+    cv2.destroyAllWindows()
 
     return val
 
